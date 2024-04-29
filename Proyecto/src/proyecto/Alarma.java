@@ -1,33 +1,54 @@
 package proyecto;
 /**
- * Una clase que indica si hay una alarma, si la hay, se guardara la hora y
- * la fecha del incidente.
- * 
+ * Una clase que indica si hay una alarma, si la hay, se guardara la hora y la fecha del incidente.
  * @author Alberto Zamora Landete
- * @version 13/12/2023
+ * @version 5
+ * @since 13/12/2023
  */
+import java.time.LocalDate;
 import java.util.*;
-public class Alarma extends SistemaSeguridad {
+public class Alarma implements EsComparable<Alarma> {
     private boolean alarm = false;
-    private ArrayList<Alarma> alarmas = new ArrayList<Alarma>();
-    public Alarma() {
+    private int id = 0;
+    private static int contador = 0;
+    private LocalDate fecha;
+    private GregorianCalendar cal;
+    /**
+     * Constructor de Alarma.
+     * @param fecha Fecha de hoy.
+     * @param cal Calendario para coger la hora y minutos.
+     */
+    public Alarma(LocalDate fecha, GregorianCalendar cal) {
         alarm = false;
+        contador++;
+        this.id = contador;
+        this.fecha = fecha;
+        this.cal = cal;
     }
-    
-    //Metodo que comprueba si hay alguna alarma activada.
-    public void setAlarma(boolean alarm) {
-        this.alarm = alarm;
-        if (alarm) {
-            setFecha(fecha); //Llamamos a la funcion del padre.
+    /**
+     * Metodo toString, devuelve la informacion de la alarma.
+     * @return Informacion de la alarma en forma de cadena.
+     */
+    public String toString() {
+        String minuto = cal.get(Calendar.MINUTE) + "";
+        if (cal.get(Calendar.MINUTE) < 10) {
+            minuto = "0" + cal.get(Calendar.MINUTE);
         }
+        return id + ". Fecha: " + fecha.getDayOfMonth() + "/" + fecha.getMonthValue() + "/" + fecha.getYear() + "\n" + "Hora: " + cal.get(Calendar.HOUR) + ":" + minuto;
     }
-    //Funcion que comprueba y muestra una incidencia pasada.
-    public void comprobarIncidencia() {
-        int num = esc.nextInt();
-        if (num < numAlarma.size() && num > -1) {
-            mostrarFecha(fecha, num); //Si la alarma esta registrada, entramos a comprobar.
-        } else {
-            System.out.println("Esa alarma no esta registrada aun"); //Si el numero de alarma introducida no esta, no entramos a comprobar.
-        }
+    /**
+     * Metodo que compara Alarmas.
+     * @param a Alarma a comparar.
+     * @return Resultado de comparar las id de las Alarmas. 
+     */
+    public int comparar(Alarma a) {
+        return id - a.id;
+    }
+    /**
+     * Metodo get de la ID.
+     * @return ID de la alarma.
+     */
+    public int getID() {
+        return id;
     }
 }

@@ -1,17 +1,19 @@
 package proyecto;
 /**
- * Test para comprobar que funciona la clase "Alarma".
+ * Test para comprobar que funciona el Programa.
  * 
  * @author Alberto Zamora Landete
- * @version 13/12/2023
+ * @version 3
+ * @since 13/12/2023
  */
+import java.time.LocalDate;
 import java.util.*;
 
 public class TestAlarma {
     public static void main(String[] args) {
         int al;
-        Alarma a = new Alarma();
-        Seguimiento s = new Seguimiento("", "");
+        ContenedorOrdenado alarma = new ContenedorOrdenado<Alarma>();
+        ContenedorOrdenado seguimiento = new ContenedorOrdenado<Alarma>();
         Scanner esc = new Scanner(System.in);
         
         do {
@@ -20,27 +22,31 @@ public class TestAlarma {
             al = esc.nextInt();
             switch (al) {
                 case 1:
-                    boolean t = true;
-                    a.setAlarma(t); //Llamada a la funcion de registrar una incidencia.
+                    LocalDate fecha = LocalDate.now(); //Instanciamos la fehca de hoy.
+                    Date hora = new Date(); //Instanciamos la hora de hoy.
+                    GregorianCalendar cal = new GregorianCalendar();
+                    cal.setTime(hora); //Guardamos la hora en Calendario.
+                    alarma.insertar(new Alarma(fecha, cal));
                     break;
                 case 2:
                     System.out.println("Que numero de incidencia quieres comprobar?");
-                    a.comprobarIncidencia(); //Llamada a la funcion para comprobar una incidencia.
+                    int id = esc.nextInt();
+                    alarma.comprobarIncidencia(id); //Llamada a la funcion para comprobar una incidencia.
                     break;
                 case 3:
                     String nombre = "", direccion = "";
                     System.out.println("Introduce tu nombre.");
                     while (nombre.equals("")) {
-                        nombre = esc.next();
+                        nombre = esc.nextLine();
                     }
                     System.out.println("Introduzca su direccion:");
                     while (direccion.equals("")) {
-                        direccion = esc.next();
+                        direccion = esc.nextLine();
                     }
-                    s.add(new Seguimiento(nombre, direccion)); //Llamada a la funcion para guardar un seguimiento.
+                    seguimiento.insertar(new Seguimiento(nombre, direccion)); //Llamada a la funcion para guardar un seguimiento.
                     break;
                 case 4:
-                    System.out.println(s.toString()); //Llamada a la funcion de mostrar seguimientos.
+                    seguimiento.mostrar(); //Llamada a la funcion de mostrar seguimientos.
                     break;
                 default:
                     break;
