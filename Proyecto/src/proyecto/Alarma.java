@@ -7,10 +7,11 @@ package proyecto;
  */
 import java.time.LocalDate;
 import java.util.*;
-public class Alarma implements EsComparable<Alarma> {
+import java.io.*;
+
+public class Alarma implements EsComparable<Alarma>, Serializable {
     private boolean alarm = false;
-    private int id = 0;
-    private static int contador = 0;
+    private int id = 0, fechaInt;
     private LocalDate fecha;
     private GregorianCalendar cal;
     /**
@@ -18,10 +19,9 @@ public class Alarma implements EsComparable<Alarma> {
      * @param fecha Fecha de hoy.
      * @param cal Calendario para coger la hora y minutos.
      */
-    public Alarma(LocalDate fecha, GregorianCalendar cal) {
+    public Alarma(int id, LocalDate fecha, GregorianCalendar cal) {
         alarm = false;
-        contador++;
-        this.id = contador;
+        this.id = id;
         this.fecha = fecha;
         this.cal = cal;
     }
@@ -50,5 +50,18 @@ public class Alarma implements EsComparable<Alarma> {
      */
     public int getID() {
         return id;
+    }
+    public String getFecha() {
+        return fecha.getDayOfMonth() + "/" + fecha.getMonthValue() + "/" + fecha.getYear();
+    }
+    public String getHora() {
+        String minuto = cal.get(Calendar.MINUTE) + "";
+        if (cal.get(Calendar.MINUTE) < 10) {
+            minuto = "0" + cal.get(Calendar.MINUTE);
+        }
+        return cal.get(Calendar.HOUR) + ":" + minuto;
+    }
+    public boolean getAlarma() {
+        return alarm;
     }
 }

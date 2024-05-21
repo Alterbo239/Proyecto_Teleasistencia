@@ -36,17 +36,19 @@ public class ContenedorOrdenado<A extends EsComparable<A>> {
         numero++;
     }
     
-    public void comprobarIncidencia(int id) {
-        int guarda = 0;
+    public void comprobarIncidencia(ArrayList<Alarma> lista, int id) {
+        Iterator it = lista.iterator();
+        Alarma a = null;
         boolean esta = false;
-        for (int i = 0; i < datos.length && datos[i] != null && !esta; i++) {
-            if (datos[i].getID() == id) {
+        
+        while(it.hasNext() && !esta) {
+            a = (Alarma) it.next();
+            if (a.getID() == id) {
                 esta = true;
-                guarda = i;
             }
         }
         if (esta) {
-            System.out.println(datos[guarda].toString());
+            System.out.println(a.toString());
         } else {
             System.out.println("Es alarma no esta.");
         }
