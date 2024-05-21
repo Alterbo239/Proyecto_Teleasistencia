@@ -3,7 +3,7 @@ package proyecto;
  * Test para comprobar que funciona el Programa.
  * 
  * @author Alberto Zamora Landete
- * @version 3
+ * @version 4
  * @since 13/12/2023
  */
 import java.time.LocalDate;
@@ -100,8 +100,8 @@ public class TestAlarma {
             File f = new File(nom);
             
             if (f.exists()) {
-                FileOutputStream fo = new FileOutputStream(f, true);
-                MiObjectOutputStream moos = new MiObjectOutputStream(fo);
+                FileOutputStream fo = new FileOutputStream(f, true); //Fichero que le dice donde escribir -> True para que pueda escribir sin debajo de los ya existentes.
+                MiObjectOutputStream moos = new MiObjectOutputStream(fo); //No escribe "header".
                 
                 moos.writeObject(a);
                 
@@ -111,7 +111,7 @@ public class TestAlarma {
                 }
             } else {
                 FileOutputStream fo = new FileOutputStream(f);
-                ObjectOutputStream oos = new ObjectOutputStream(fo);
+                ObjectOutputStream oos = new ObjectOutputStream(fo); //Escribe "header".
                 
                 oos.writeObject(a);
                 
@@ -138,16 +138,16 @@ public class TestAlarma {
         try {
             f = new File(nom);
             
-            if (f.exists()) {
+            if (f.exists()) { //Si el fichero existe:
                 fi = new FileInputStream(f);
                 ois = new ObjectInputStream(fi);
                 
                 Alarma al;
                 
                 while(true) {
-                    al = (Alarma) ois.readObject();
-                    a.add(al);
-                    idAlarma++;
+                    al = (Alarma) ois.readObject(); //Guardamos la informacion de la Alarma.
+                    a.add(al); //Introducimos la Alarma en la lista.
+                    idAlarma++; //El numero de Alarma sera siempre 1 mayor a la cantidad de objetos almacenados. (Para almacenar la siguiente).
                 }
             }
         } catch (EOFException end) {
@@ -185,7 +185,7 @@ public class TestAlarma {
                     while(true) {
                         Alarma a = null;
                         a = (Alarma) ois.readObject();
-                        System.out.println(a.toString());
+                        System.out.println(a.toString()); //Muestra la informacion de cada Alarma registrada.
                     }
                 }
             } catch (EOFException end) {
@@ -206,10 +206,16 @@ public class TestAlarma {
         }
     }
     ////////////////////////////BaseDeDatos/////////////////////////////////////
+    /**
+     * Funcion que inserta una Alarma en la Base de Datos.
+     * @param con Conexion con MySQL (Base de Datos).
+     * @param a Objeto de tipo Alarma para sacer su informacion e introducirla en la Base de Datos.
+     * @throws SQLException Error de tipo SQL.
+     */
     public static void insertarAlarma(Connection con, Alarma a) throws SQLException {
         PreparedStatement pst = null;
-        int intensidad = (int) Math.floor(Math.random()*5+1);
-        int idCliente = (int) Math.floor(Math.random()*3+1);
+        int intensidad = (int) Math.floor(Math.random()*5+1); //Elige una intensidad entre 1 y 5. (Rango de intensidad).
+        int idCliente = (int) Math.floor(Math.random()*3+1); //Lo mismo pero entre Clientes.
          try {
              pst = con.prepareStatement("INSERT INTO alarmaJava VALUES (?, ?, ?, ?)");
              pst.setInt(1, a.getID());

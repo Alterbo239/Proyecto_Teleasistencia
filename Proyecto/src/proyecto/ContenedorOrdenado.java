@@ -2,7 +2,7 @@ package proyecto;
 /**
  * Contenedor Ordenado para introducir a una lista las alarmas y seguimientos.
  * @author Alberto Zamora Landete
- * @version 1
+ * @version 2
  * @since 29/04/2024
  */
 import java.time.*;
@@ -18,7 +18,10 @@ public class ContenedorOrdenado<A extends EsComparable<A>> {
     public ContenedorOrdenado() {
         this.datos = (A[]) new EsComparable[10];
     }
-
+    /**
+     * Funcion que inserta un dato a un contenedor ordenado.
+     * @param dato Objeto del que quieres almacenar.
+     */
     public void insertar(A dato) {
         boolean ordenado = false;
         int contador = numero;
@@ -35,25 +38,31 @@ public class ContenedorOrdenado<A extends EsComparable<A>> {
         }
         numero++;
     }
-    
+    /**
+     * Funcion que comprueba alguna Alarma registrada.
+     * @param lista Lista de Alarmas.
+     * @param id ID de la Alarma a comprobar.
+     */
     public void comprobarIncidencia(ArrayList<Alarma> lista, int id) {
         Iterator it = lista.iterator();
         Alarma a = null;
         boolean esta = false;
         
-        while(it.hasNext() && !esta) {
-            a = (Alarma) it.next();
-            if (a.getID() == id) {
+        while(it.hasNext() && !esta) { //Mientras pueda leer o no haya encontrado la Alarma, seguira leyendo.
+            a = (Alarma) it.next(); // Guardamos la Alarma.
+            if (a.getID() == id) { //Comprobamos la Alarma.
                 esta = true;
             }
         }
         if (esta) {
-            System.out.println(a.toString());
+            System.out.println(a.toString()); // Si esta, la mostramos.
         } else {
-            System.out.println("Es alarma no esta.");
+            System.out.println("Es alarma no esta."); //Si no esta, se lo hacemos saber.
         }
     }
-    
+    /**
+     * Funcion que muestra los objetos almacenados.
+     */
     public void mostrar() {
         for (int i = 0; i < numero; i++) {
             System.out.println(datos[i].toString());

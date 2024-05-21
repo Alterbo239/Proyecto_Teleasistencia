@@ -1,6 +1,6 @@
 package proyecto;
 /**
- *
+ * Programa que no escribe "header" para evitar problemas.
  * @author Alberto Zamora Landete
  */
 import java.io.*;
