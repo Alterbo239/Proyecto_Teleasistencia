@@ -1,6 +1,7 @@
 package Teleasistencia;
 
 import java.util.*;
+import TeleasistenciaDAO.*;
 /**
  * La clase cliente 
  * Esta clase lo que hace es almacenar los clientes 
@@ -16,6 +17,8 @@ public class Cliente {
     private String telefono;
     private String correo;
     private String dni;
+    private int codigo;
+    private ArrayList alarma=new ArrayList();
     /**
      * Constructor de la clase cliente 
      * Los datos que alamcenamos delo cliente 
@@ -26,8 +29,10 @@ public class Cliente {
      * @param telefono
      * @param correo
      * @param dni
+     * @param codigo
+     * @param a
      */
-    public Cliente(String nombre,String apellido1,String apellido2,int edad,String telefono,String correo,String dni){
+    public Cliente(String nombre,String apellido1,String apellido2,int edad,String telefono,String correo,String dni,int codigo){
         this.apellido1 = apellido1;
         this.apellido2 = apellido2;
         this.nombre = nombre;
@@ -35,6 +40,7 @@ public class Cliente {
         this.telefono = telefono;
         this.correo = correo;
         this.dni = dni;
+        this.codigo=codigo;
     }   
 
     /**
@@ -44,7 +50,7 @@ public class Cliente {
   
     
     public String obtenerInformacion() {
-        return "Nombre completo: " + nombre + " " + apellido1 + " " + apellido2 +", Edad: " + edad +", Teléfono: " + telefono +", Correo: " + correo +", DNI: " + dni;
+        return "Nombre completo: " + nombre + " " + apellido1 + " " + apellido2 +", Edad: " + edad +", Teléfono: " + telefono +", Correo: " + correo +", DNI: " + dni+codigo+", codigo";
     }
     
   /**
@@ -96,5 +102,31 @@ public class Cliente {
     public String getdni(){
         return dni;
     }
-    
+    /**
+     * Obtener el codigo
+     * @return el codigo del cliente 
+     */
+    public int codigo(){
+        return codigo;
+    }
+    /**
+     * Inseertar una alarma   
+     */
+    public void insertarAlarma(Alarma a) {
+        alarma.add(a);
+    }
+    /**
+     * Mostrar la alarma 
+     * Función hecha por Alberto 
+     */
+    public void mostrarAlarma() {
+        Iterator it = alarma.iterator();
+        Alarma a = null;
+        
+        while (it.hasNext()) {
+            a = (Alarma) it.next();
+            System.out.println("Alarma " + a.toString());
+            System.out.println("");
+        }
+    }
 }
