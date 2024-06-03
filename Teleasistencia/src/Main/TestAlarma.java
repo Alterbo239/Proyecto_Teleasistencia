@@ -321,7 +321,11 @@ public class TestAlarma {
             io.printStackTrace();
         }
     }
-    
+    /**
+     * Funcion que muestra los Seguimientos.
+     * @param nom Nombre del fichero.
+     * @throws IOException Error del tipo IO.
+     */
     public static void mostrarSeguimiento(String nom) throws IOException {
         try {
             File f = null;
@@ -356,7 +360,12 @@ public class TestAlarma {
             i.printStackTrace();
         }
     }
-    
+    /**
+     * Funcion que manda almacena un Seguimiento en la BD.
+     * @param con Conexion con la BD.
+     * @param s Seguimiento a almacenar.
+     * @throws SQLException Error del tipo SQL.
+     */
     public static void insertarSeguimiento(Connection con, Seguimiento s) throws SQLException {
         PreparedStatement pst = null;
          try {
