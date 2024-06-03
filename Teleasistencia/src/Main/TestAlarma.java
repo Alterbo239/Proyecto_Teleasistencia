@@ -17,13 +17,16 @@ import TeleasistenciaDAO.*;
 
 public class TestAlarma {
     static int idAlarma = 1;
+    static int idSeguimiento = 1;
     public static void main(String[] args) throws SQLException {
-        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/teleasistencia", "root", "0239");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/teleasistencia_definitiva", "root", "0239");
         final String FICHERO = "Alarmas.txt";
+        final String FICHERO2 = "Seguimiento.txt";
         ArrayList<Alarma> lista = new ArrayList();
         
         try {
             cargarArray(FICHERO, lista);
+            sumarIDSeguimiento(FICHERO2);
         } catch (IOException io) {
             io.printStackTrace();
         }
@@ -73,14 +76,28 @@ public class TestAlarma {
                     while (direccion.equals("")) {
                         direccion = esc.nextLine();
                     }
-                    seguimiento.insertar(new Seguimiento(nombre, direccion)); //Llamada a la funcion para guardar un seguimiento.
+                    Seguimiento s = new Seguimiento(nombre, direccion);
+                    seguimiento.insertar(s); //Llamada a la funcion para guardar un seguimiento.
+                    try {
+                        escribirFichero2(FICHERO2, s); //Llamada a la funcion que escribe sobre el archivo.
+                        insertarSeguimiento(con, s);
+                        idSeguimiento++;
+                    } catch (IOException io) {
+                        io.printStackTrace();
+                    } catch (SQLException sql) {
+                        sql.printStackTrace();
+                    }
                     break;
                 case 4:
-                    seguimiento.mostrar(); //Llamada a la funcion de mostrar seguimientos.
+                    try {
+                        mostrarSeguimiento(FICHERO2);
+                    } catch (IOException io) {
+                        io.printStackTrace();
+                    }//Llamada a la funcion de mostrar seguimientos.
                     break;
                 case 239: //Funcion "oculta" para comprobar que todo se lee bien.
                     try {
-                        leer(FICHERO); //Llamada a la funcion de mostrar fichero.
+                        leerAlarma(FICHERO); //Llamada a la funcion de mostrar fichero.
                     } catch (IOException io) {
                         io.printStackTrace();
                     }
@@ -169,12 +186,46 @@ public class TestAlarma {
         return a;
     }
     /**
+     * Funcion que suma el ID del Seguimiento.
+     * @param nom Nombre del fichero.
+     * @throws IOException Error de tipo IO.
+     */
+    public static void sumarIDSeguimiento(String nom) throws IOException {
+        File f = null;
+        FileInputStream fi = null;
+        ObjectInputStream ois = null;
+        try {
+            f = new File(nom);
+            
+            if (f.exists()) { //Si el fichero existe:
+                fi = new FileInputStream(f);
+                ois = new ObjectInputStream(fi);
+                
+                while(true) {
+                    idSeguimiento++; //El numero de Seguimiento sera siempre 1 mayor a la cantidad de objetos almacenados. (Para almacenar la siguiente).
+                }
+            }
+        } catch (EOFException end) {
+                System.out.println("----------");
+            } catch (FileNotFoundException fnf) {
+                System.out.println("Fichero no encontrado " + fnf);
+            } catch (Throwable t) {
+                System.out.println("Error de programa " + t);
+                t.printStackTrace();
+            } finally {
+                if (ois != null) {
+                    ois.close();
+                    fi.close();
+                }
+            }
+    }
+    /**
      * 
      * Funcion que lee el archivo.
      * @param nom Nombre del archivo.
      * @throws IOException Error de tipo IO.
      */
-    public static void leer(String nom) throws IOException {
+    public static void leerAlarma(String nom) throws IOException {
         try {
             File f = null;
             FileInputStream fe = null;
@@ -220,11 +271,98 @@ public class TestAlarma {
         int intensidad = (int) Math.floor(Math.random()*5+1); //Elige una intensidad entre 1 y 5. (Rango de intensidad).
         int idCliente = (int) Math.floor(Math.random()*3+1); //Lo mismo pero entre Clientes.
          try {
-             pst = con.prepareStatement("INSERT INTO alarmaJava VALUES (?, ?, ?, ?)");
+             pst = con.prepareStatement("INSERT INTO alarma VALUES (?, ?, ?, ?)");
              pst.setInt(1, a.getID());
              pst.setInt(2, intensidad);
              pst.setString(3, a.getFecha());
              pst.setInt(4, idCliente);
+             
+             pst.executeUpdate();
+             
+             if (pst != null) {
+                pst.close();
+             }
+         } catch (SQLException sql) {
+             sql.printStackTrace();
+         }
+    }
+    /**
+     * Funcion que escribe sobre el archivo.
+     * @param nom Nombre del archivo.
+     * @param s Seguimiento a registrar.
+     * @throws IOException Error de tipo IO.
+     */
+    public static void escribirFichero2(String nom, Seguimiento s) throws IOException {
+        try {
+            File f = new File(nom);
+            
+            if (f.exists()) {
+                FileOutputStream fo = new FileOutputStream(f, true); //Fichero que le dice donde escribir -> True para que pueda escribir sin debajo de los ya existentes.
+                MiObjectOutputStream moos = new MiObjectOutputStream(fo); //No escribe "header".
+                
+                moos.writeObject(s);
+                
+                if (moos != null) {
+                    moos.close();
+                    fo.close();
+                }
+            } else {
+                FileOutputStream fo = new FileOutputStream(f);
+                ObjectOutputStream oos = new ObjectOutputStream(fo); //Escribe "header".
+                
+                oos.writeObject(s);
+                
+                if (oos != null) {
+                    oos.close();
+                    fo.close();
+                }
+            }
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
+    }
+    
+    public static void mostrarSeguimiento(String nom) throws IOException {
+        try {
+            File f = null;
+            FileInputStream fe = null;
+            ObjectInputStream ois = null;
+            try {
+                f = new File(nom);
+                if (f.exists()) {
+                    fe = new FileInputStream(f);
+                    ois = new ObjectInputStream(fe);
+                    
+                    while(true) {
+                        Seguimiento s = null;
+                        s = (Seguimiento) ois.readObject();
+                        System.out.println(s.toString()); //Muestra la informacion de cada Seguimiento registrado.
+                    }
+                }
+            } catch (EOFException end) {
+                System.out.println("----------");
+            } catch (FileNotFoundException fnf) {
+                System.out.println("Fichero no encontrado " + fnf);
+            } catch (Throwable t) {
+                System.out.println("Error de programa " + t);
+                t.printStackTrace();
+            } finally {
+                if (ois != null) {
+                    ois.close();
+                    fe.close();
+                }
+            }
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+    
+    public static void insertarSeguimiento(Connection con, Seguimiento s) throws SQLException {
+        PreparedStatement pst = null;
+         try {
+             pst = con.prepareStatement("INSERT INTO seguimiento VALUES (" + idSeguimiento + ", ?, ?)");
+             pst.setString(1, s.getNombre());
+             pst.setString(2, s.getDireccion());
              
              pst.executeUpdate();
              

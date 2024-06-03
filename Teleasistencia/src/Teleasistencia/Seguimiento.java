@@ -6,8 +6,9 @@ package Teleasistencia;
  * @since 21/02/2024.
  */
 import TeleasistenciaDAO.*;
+import java.io.*;
 
-public class Seguimiento implements EsComparable<Seguimiento> {
+public class Seguimiento implements EsComparable<Seguimiento>, Serializable {
     private int id = 0;
     private int cont = 0;
     private String nombre, direccion;
@@ -27,7 +28,7 @@ public class Seguimiento implements EsComparable<Seguimiento> {
      * @return Informacion del Seguimiento en forma de cadena.
      */
     public String toString() {
-        return "Nombre: " + getNombre() + "." + "\n" + "Direccion: " + getdireccion() + "." + "\n";
+        return "Nombre: " + getNombre() + "." + "\n" + "Direccion: " + getDireccion() + "." + "\n";
     }
     /**
      * Metodo get de Nombre.
@@ -40,7 +41,7 @@ public class Seguimiento implements EsComparable<Seguimiento> {
      * Metodo get de la direccion.
      * @return Direccion del paciente.
      */
-    public String getdireccion() {
+    public String getDireccion() {
         return direccion;
     }
     /**

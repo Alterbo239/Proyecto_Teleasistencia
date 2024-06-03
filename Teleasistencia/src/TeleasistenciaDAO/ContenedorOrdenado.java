@@ -1,3 +1,4 @@
+
 package TeleasistenciaDAO;
 /**
  * Contenedor Ordenado para introducir a una lista las alarmas y seguimientos.
