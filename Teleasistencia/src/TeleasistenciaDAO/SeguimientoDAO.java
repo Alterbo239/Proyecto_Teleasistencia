@@ -5,9 +5,7 @@ package TeleasistenciaDAO;
  */
 
 import Teleasistencia.Seguimiento;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class SeguimientoDAO {
     private int idSeguimiento = 0;
@@ -35,5 +33,23 @@ public class SeguimientoDAO {
          } catch (SQLException sql) {
              sql.printStackTrace();
          }
+    }
+    /**
+     * Funcion que elimina una alarma.
+     * @param con Conexion con MySQL (Base de Datos).
+     * @param id ID de la alarma a eliminar.
+     * @throws SQLException Error de tipo SQL.
+     */
+    public void eliminarAlarma(Connection con, int id) throws SQLException {
+        Statement st = con.createStatement();
+        String eliminar = "DELETE FROM seguimiento WHERE id = " + id;
+        try {
+            st.executeUpdate(eliminar);
+        } catch (SQLException sql) {
+            sql.printStackTrace();
+        }
+        if (st != null) {
+            st.close();
+        }
     }
 }

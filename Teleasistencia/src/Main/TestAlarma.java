@@ -30,6 +30,9 @@ public class TestAlarma {
         } catch (IOException io) {
             io.printStackTrace();
         }
+       
+        AlarmaDAO aDAO = new AlarmaDAO();
+        SeguimientoDAO sDAO = new SeguimientoDAO(idSeguimiento);
         
         Alarma ala = null;
         int al;
@@ -39,7 +42,7 @@ public class TestAlarma {
         
         do {
             System.out.println("Que quieres hacer?");
-            System.out.println("1) Registrar incidencia. 2) Comprobar incidencia. 3) Iniciar seguimiento. 4) Mostrar seguimientos. -1) Salir.");
+            System.out.println("1) Registrar incidencia. \n 2) Comprobar incidencia. \n 3) Iniciar seguimiento. \n 4) Mostrar seguimientos. \n 5) Eliminar alarma. \n -1) Salir.");
             al = esc.nextInt();
             switch (al) {
                 case 1:
@@ -49,7 +52,6 @@ public class TestAlarma {
                     cal.setTime(hora); //Guardamos la hora en Calendario.
                     
                     ala = new Alarma(idAlarma, fecha, cal);
-                    AlarmaDAO aDAO = new AlarmaDAO();
         
                     lista.add(ala); //Insertamos la alarma en la lista.
                     try {
@@ -80,7 +82,6 @@ public class TestAlarma {
                     
                     Seguimiento s = new Seguimiento(nombre, direccion);
                     seguimiento.insertar(s); //Llamada a la funcion para guardar un seguimiento.
-                    SeguimientoDAO sDAO = new SeguimientoDAO(idSeguimiento);
                     
                     try {
                         escribirFichero2(FICHERO2, s); //Llamada a la funcion que escribe sobre el archivo.
@@ -99,6 +100,24 @@ public class TestAlarma {
                         io.printStackTrace();
                     }//Llamada a la funcion de mostrar seguimientos.
                     break;
+                case 5:
+                    System.out.println("Introduzca el ID de la alarma:");
+                    int idEliminarA = esc.nextInt();
+                    try {
+                        aDAO.eliminarAlarma(con, idEliminarA); //Eliminar Alarma.
+                    } catch (SQLException sql) {
+                        sql.printStackTrace();
+                    }
+                    break;
+                case 6:
+                    System.out.println("Introduzca el ID del Seguimiento:");
+                    int idEliminarS = esc.nextInt();
+                    try {
+                        sDAO.eliminarAlarma(con, idEliminarS); //Eliminar Seguimiento.
+                    } catch (SQLException sql) {
+                        sql.printStackTrace();
+                    }
+                    break;
                 case 239: //Funcion "oculta" para comprobar que todo se lee bien.
                     try {
                         leerAlarma(FICHERO); //Llamada a la funcion de mostrar fichero.
@@ -112,6 +131,7 @@ public class TestAlarma {
         } while (al != -1);
         System.out.println("Fin.");
     }
+    
     ////////////////////////////FICHEROS/////////////////////////////////////////
     /**
      * Funcion que escribe sobre el archivo.
