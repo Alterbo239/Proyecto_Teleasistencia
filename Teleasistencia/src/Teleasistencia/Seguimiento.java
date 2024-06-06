@@ -12,6 +12,12 @@ public class Seguimiento implements EsComparable<Seguimiento>, Serializable {
     private int id = 0;
     private int cont = 0;
     private String nombre, direccion;
+    
+    /**
+     * Constructor vacio.
+     */
+    public Seguimiento() {
+    }
     /**
      * Constructor Seguimiento.
      * @param nombre Nombre del paciente.
@@ -23,6 +29,7 @@ public class Seguimiento implements EsComparable<Seguimiento>, Serializable {
         this.nombre = nombre;
         this.direccion = direccion;
     }
+    
     /**
      * Metodo toString, devuelve la informacion del Seguimiento.
      * @return Informacion del Seguimiento en forma de cadena.

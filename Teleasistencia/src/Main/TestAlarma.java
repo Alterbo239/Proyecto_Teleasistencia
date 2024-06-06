@@ -49,11 +49,12 @@ public class TestAlarma {
                     cal.setTime(hora); //Guardamos la hora en Calendario.
                     
                     ala = new Alarma(idAlarma, fecha, cal);
+                    AlarmaDAO aDAO = new AlarmaDAO();
         
                     lista.add(ala); //Insertamos la alarma en la lista.
                     try {
                         escribirFichero(FICHERO, ala); //Llamada a la funcion que escribe sobre el archivo.
-                        insertarAlarma(con, ala);
+                        aDAO.insertarAlarma(con, ala);
                         idAlarma++;
                     } catch (IOException io) {
                         io.printStackTrace();
@@ -76,11 +77,14 @@ public class TestAlarma {
                     while (direccion.equals("")) {
                         direccion = esc.nextLine();
                     }
+                    
                     Seguimiento s = new Seguimiento(nombre, direccion);
                     seguimiento.insertar(s); //Llamada a la funcion para guardar un seguimiento.
+                    SeguimientoDAO sDAO = new SeguimientoDAO(idSeguimiento);
+                    
                     try {
                         escribirFichero2(FICHERO2, s); //Llamada a la funcion que escribe sobre el archivo.
-                        insertarSeguimiento(con, s);
+                        sDAO.insertarSeguimiento(con, s);
                         idSeguimiento++;
                     } catch (IOException io) {
                         io.printStackTrace();
@@ -201,7 +205,9 @@ public class TestAlarma {
                 fi = new FileInputStream(f);
                 ois = new ObjectInputStream(fi);
                 
+                Seguimiento s = new Seguimiento();
                 while(true) {
+                    s = (Seguimiento) ois.readObject();
                     idSeguimiento++; //El numero de Seguimiento sera siempre 1 mayor a la cantidad de objetos almacenados. (Para almacenar la siguiente).
                 }
             }
@@ -259,33 +265,7 @@ public class TestAlarma {
             i.printStackTrace();
         }
     }
-    ////////////////////////////BaseDeDatos/////////////////////////////////////
-    /**
-     * Funcion que inserta una Alarma en la Base de Datos.
-     * @param con Conexion con MySQL (Base de Datos).
-     * @param a Objeto de tipo Alarma para sacer su informacion e introducirla en la Base de Datos.
-     * @throws SQLException Error de tipo SQL.
-     */
-    public static void insertarAlarma(Connection con, Alarma a) throws SQLException {
-        PreparedStatement pst = null;
-        int intensidad = (int) Math.floor(Math.random()*5+1); //Elige una intensidad entre 1 y 5. (Rango de intensidad).
-        int idCliente = (int) Math.floor(Math.random()*3+1); //Lo mismo pero entre Clientes.
-         try {
-             pst = con.prepareStatement("INSERT INTO alarma VALUES (?, ?, ?, ?)");
-             pst.setInt(1, a.getID());
-             pst.setInt(2, intensidad);
-             pst.setString(3, a.getFecha());
-             pst.setInt(4, idCliente);
-             
-             pst.executeUpdate();
-             
-             if (pst != null) {
-                pst.close();
-             }
-         } catch (SQLException sql) {
-             sql.printStackTrace();
-         }
-    }
+    
     /**
      * Funcion que escribe sobre el archivo.
      * @param nom Nombre del archivo.
@@ -359,27 +339,5 @@ public class TestAlarma {
         } catch (IOException i) {
             i.printStackTrace();
         }
-    }
-    /**
-     * Funcion que manda almacena un Seguimiento en la BD.
-     * @param con Conexion con la BD.
-     * @param s Seguimiento a almacenar.
-     * @throws SQLException Error del tipo SQL.
-     */
-    public static void insertarSeguimiento(Connection con, Seguimiento s) throws SQLException {
-        PreparedStatement pst = null;
-         try {
-             pst = con.prepareStatement("INSERT INTO seguimiento VALUES (" + idSeguimiento + ", ?, ?)");
-             pst.setString(1, s.getNombre());
-             pst.setString(2, s.getDireccion());
-             
-             pst.executeUpdate();
-             
-             if (pst != null) {
-                pst.close();
-             }
-         } catch (SQLException sql) {
-             sql.printStackTrace();
-         }
     }
 }
