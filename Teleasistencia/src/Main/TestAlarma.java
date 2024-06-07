@@ -101,11 +101,11 @@ public class TestAlarma {
                     }//Llamada a la funcion de mostrar seguimientos.
                     break;
                 case 5:
-                    System.out.println("Introduzca la posicion de la alarma:");
+                    System.out.println("Introduzca el ID de la alarma:");
                     int idEliminarA = esc.nextInt();
+                    eliminarArray(lista, idEliminarA);
                     try {
                         aDAO.eliminarAlarma(con, idEliminarA); //Eliminar Alarma.
-                        lista.remove(lista.get(idEliminarA));
                         
                         eliminarAlarmaFichero(FICHERO, lista); //Eliminar Alarma del fichero.
                     } catch (SQLException sql) {
@@ -409,5 +409,15 @@ public class TestAlarma {
         }
         f.delete(); //Elimina el fichero existente.
         f2.renameTo(f); //Renombra el fichero nuevo al fichero original.
+    }
+    
+    public static void eliminarArray(ArrayList<Alarma> lista, int idAlarma) {
+        Iterator it = lista.iterator();
+        while(it.hasNext()) {
+            Alarma a = (Alarma) it.next();
+            if(a.getID() == idAlarma) {
+                lista.remove(a);
+            }
+        }
     }
 }
