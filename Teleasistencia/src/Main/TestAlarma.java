@@ -101,14 +101,18 @@ public class TestAlarma {
                     }//Llamada a la funcion de mostrar seguimientos.
                     break;
                 case 5:
-                    System.out.println("Introduzca el ID de la alarma:");
+                    System.out.println("Introduzca la posicion de la alarma:");
                     int idEliminarA = esc.nextInt();
                     try {
                         aDAO.eliminarAlarma(con, idEliminarA); //Eliminar Alarma.
+                        lista.remove(lista.get(idEliminarA));
+                        
+                        eliminarAlarmaFichero(FICHERO, lista); //Eliminar Alarma del fichero.
                     } catch (SQLException sql) {
                         sql.printStackTrace();
                     }
                     break;
+                    /* Funcion no implementada.
                 case 6:
                     System.out.println("Introduzca el ID del Seguimiento:");
                     int idEliminarS = esc.nextInt();
@@ -118,6 +122,7 @@ public class TestAlarma {
                         sql.printStackTrace();
                     }
                     break;
+                    */
                 case 239: //Funcion "oculta" para comprobar que todo se lee bien.
                     try {
                         leerAlarma(FICHERO); //Llamada a la funcion de mostrar fichero.
@@ -359,5 +364,50 @@ public class TestAlarma {
         } catch (IOException i) {
             i.printStackTrace();
         }
+    }
+    //////////////////////////Sustituir ficheros////////////////////////////////
+    /**
+     * Funcion que elimina una Alarma.
+     * @param nom Nombre del fichero.
+     * @param lista Lista de alarmas.
+     */
+    public static void eliminarAlarmaFichero(String nom, ArrayList<Alarma> lista) {
+        String fichN = "Provisional.txt";
+        Iterator it = lista.iterator();
+        
+        File f = new File(nom);
+        File f2 = new File(fichN);
+        
+        while(it.hasNext()) {
+            Alarma a = (Alarma) it.next();
+            
+            try {
+                if (f2.exists()) {
+                    FileOutputStream fo = new FileOutputStream(f2, true); //Fichero que le dice donde escribir -> True para que pueda escribir sin debajo de los ya existentes.
+                    MiObjectOutputStream moos = new MiObjectOutputStream(fo); //No escribe "header".
+
+                    moos.writeObject(a);
+
+                    if (moos != null) {
+                        moos.close();
+                        fo.close();
+                    }
+                } else {
+                    FileOutputStream fo = new FileOutputStream(f2);
+                    ObjectOutputStream oos = new ObjectOutputStream(fo); //Escribe "header".
+
+                    oos.writeObject(a);
+
+                    if (oos != null) {
+                        oos.close();
+                        fo.close();
+                    }
+                }
+            } catch (IOException io) {
+                io.printStackTrace();
+            }
+        }
+        f.delete(); //Elimina el fichero existente.
+        f2.renameTo(f); //Renombra el fichero nuevo al fichero original.
     }
 }
