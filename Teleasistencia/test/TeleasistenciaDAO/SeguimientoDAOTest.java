@@ -4,28 +4,30 @@ import Teleasistencia.Seguimiento;
 import java.sql.*;
 import org.junit.*;
 import static org.junit.Assert.*;
-
 /**
- *
- * @author lliurex
+ * Test de SeguimientoDAO.
+ * @author Alberto Zamora Landete
  */
 public class SeguimientoDAOTest {
-    
     public SeguimientoDAOTest() {
     }
-    
+    /**
+     * Final de las pruebas.
+     */
     @AfterClass
     public static void tearDownClass() {
         System.out.println("Fin del test.");
     }
-    
+    /**
+     * Entre test y test se separa por un espacio para tener claro luego cual es cual.
+     */
     @After
     public void tearDown() {
+        System.out.println("Test realizado.");
         System.out.println("");
     }
-
     /**
-     * Test of insertarSeguimiento method, of class SeguimientoDAO.
+     * Test del metodo insertarSeguimiento.
      */
     @Test
     public void testInsertarSeguimiento() throws Exception {
@@ -35,9 +37,8 @@ public class SeguimientoDAOTest {
         SeguimientoDAO instance = new SeguimientoDAO(1);
         instance.insertarSeguimiento(con, s);
     }
-
     /**
-     * Test of eliminarAlarma method, of class SeguimientoDAO.
+     * Test del metodo eliminarAlarma.
      */
     @Test
     public void testEliminarAlarma() throws Exception {
@@ -47,5 +48,4 @@ public class SeguimientoDAOTest {
         SeguimientoDAO instance = new SeguimientoDAO(id);
         instance.eliminarAlarma(con, id);
     }
-    
 }
