@@ -101,5 +101,4 @@ public class Familiar implements EsComparable<Familiar>{
     public int comparar(Familiar f){
         return codigo-f.codigo;
     }
-    
 }
